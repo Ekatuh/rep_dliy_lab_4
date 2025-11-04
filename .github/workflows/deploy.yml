@@ -1,4 +1,5 @@
 name: vetki and relaese
+
 on:
   release:
     types: [published]
@@ -8,35 +9,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Шаг 1: Получение кода из репозитория
-      - name: Checkout repository
+      # Шаг 1: Получаем код из репозитория
+      - name: Get code
         uses: actions/checkout@v4
 
-      # Шаг 2: Подготовка файлов для публикации
-      - name: Prepare files for publishing
+      # Шаг 2: Подготавливаем файлы для публикации
+      - name: Prepare files
         run: |
-          # Создание директории site
-          mkdir -p site
+          # Создаем основную папку
+          mkdir -p _site
           
-          # Создание подпапки с именем версии релиза
-          mkdir -p site/${{ github.event.release.tag_name }}
+          # Создаем папку с именем версии релиза
+          mkdir -p _site/${{ github.event.release.tag_name }}
           
-          # Копирование всех файлов в папку с версией
-          cp -r *.html ru/ en/ site/${{ github.event.release.tag_name }}/
+          # Копируем все нужные файлы
+          cp -r *.html ru/ en/ _site/${{ github.event.release.tag_name }}/
           
-          # Создание файла .nojekyll для отключения обработки Jekyll
-          touch site/.nojekyll
-          
-          # Модификация ссылок в HTML файлах для корректной работы в подпапке
-          find site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"../index.html|href=\"/${{ github.event.release.tag_name }}/index.html|g" {} \;
-          find site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"ru/|href=\"/${{ github.event.release.tag_name }}/ru/|g" {} \;
-          find site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"en/|href=\"/${{ github.event.release.tag_name }}/en/|g" {} \;
+          # Простое исправление ссылок для работы из подпапки
+          find _site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"ru/|href=\"/${{ github.event.release.tag_name }}/ru/|g" {} \;
+          find _site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"en/|href=\"/${{ github.event.release.tag_name }}/en/|g" {} \;
 
-      # Шаг 3: Публикация на GitHub Pages
+      # Шаг 3: Публикуем на GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
+          publish_dir: ./_site
           publish_branch: gh-pages
           keep_files: true
