@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  deploy:
+  deploy-lab4:
     runs-on: ubuntu-latest
 
     steps:
@@ -13,14 +13,22 @@ jobs:
       - name: Get code
         uses: actions/checkout@v4
 
-      - name: Prepare and deploy
+      # Шаг 2: Подготавливаем файлы для публикации
+      - name: Copy files
         run: |
-            mkdir -p _site
-            mkdir -p _site/${{ github.event.release.tag_name }}
-            cp -r *.html ru/ en/ _site/${{ github.event.release.tag_name }}/
+          # Создаем папку _site
+          mkdir _site
+          
+          # Создаем внутри папку с именем версии
+          mkdir _site/${{ github.event.release.tag_name }}
+          
+          # Копируем файлы в папку с версией
+          cp -r *.html ru/ en/ _site/${{ github.event.release.tag_name }}/
+          
+          # Исправляем ссылки прямо в папке с версией
+          find _site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|/rep_dliy_lab_4/|/rep_dliy_lab_4/${{ github.event.release.tag_name }}|/g" {} \;
 
 
-      # Шаг 3: Публикуем на GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
