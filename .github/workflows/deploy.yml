@@ -1,5 +1,4 @@
 name: vetki and relaese
-
 on:
   release:
     types: [published]
@@ -9,22 +8,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
+      # Шаг 1: Получение кода из репозитория
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Создаём структуру сайта для релиза
-      - name: Prepare versioned site
+      # Шаг 2: Подготовка файлов для публикации
+      - name: Prepare files for publishing
         run: |
-          mkdir -p _site/${GITHUB_REF_NAME}
-          cp -r index.html ru en _site/${GITHUB_REF_NAME}/
-          cp index.html _site/
+          # Создание директории site
+          mkdir -p site
+          
+          # Создание подпапки с именем версии релиза
+          mkdir -p site/${{ github.event.release.tag_name }}
+          
+          # Копирование всех файлов в папку с версией
+          cp -r *.html ru/ en/ site/${{ github.event.release.tag_name }}/
+          
+          # Модификация ссылок в HTML файлах для корректной работы в подпапке
+          find site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"../|href=\"/${{ github.event.release.tag_name }}/|g" {} \;
+          find site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"ru/|href=\"/${{ github.event.release.tag_name }}/ru/|g" {} \;
+          find site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"en/|href=\"/${{ github.event.release.tag_name }}/en/|g" {} \;
 
-      # Публикуем на GitHub Pages
+      # Шаг 3: Публикация на GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
           publish_branch: gh-pages
-          publish_dir: ./_site
           keep_files: true
