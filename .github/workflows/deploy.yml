@@ -1,0 +1,30 @@
+name: vetki and relaese
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Создаём структуру сайта для релиза
+      - name: Prepare versioned site
+        run: |
+          mkdir -p _site/${GITHUB_REF_NAME}
+          cp -r index.html ru en _site/${GITHUB_REF_NAME}/
+          cp index.html _site/
+
+      # Публикуем на GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./_site
+          keep_files: true
