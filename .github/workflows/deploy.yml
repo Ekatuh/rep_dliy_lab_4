@@ -5,32 +5,20 @@ on:
     types: [published]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
 
     steps:
-      - name: Get code
+      - name: Clone rep
         uses: actions/checkout@v4
 
 
-      - name: Copy files
+      - name: Rabota files
         run: |
-          # Создаем папку _site
-          mkdir -p _site
-          # Создаем внутри папку с именем версии
           mkdir -p _site/${{ github.event.release.tag_name }}
-          
-          # Копируем файлы в папку с версией
           cp -r *.html ru/ en/ _site/${{ github.event.release.tag_name }}/
-          
-          # Исправляем ссылки прямо в папке с версией
           find _site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|/rep_dliy_lab_4/|/rep_dliy_lab_4/${{ github.event.release.tag_name }}/|g" {} \;
 
-      # Шаг 3: Публикуем на GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
