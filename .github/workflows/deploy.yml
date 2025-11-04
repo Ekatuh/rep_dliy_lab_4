@@ -24,8 +24,11 @@ jobs:
           # Копирование всех файлов в папку с версией
           cp -r *.html ru/ en/ site/${{ github.event.release.tag_name }}/
           
+          # Создание файла .nojekyll для отключения обработки Jekyll
+          touch site/.nojekyll
+          
           # Модификация ссылок в HTML файлах для корректной работы в подпапке
-          find site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"../|href=\"/${{ github.event.release.tag_name }}/|g" {} \;
+          find site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"../index.html|href=\"/${{ github.event.release.tag_name }}/index.html|g" {} \;
           find site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"ru/|href=\"/${{ github.event.release.tag_name }}/ru/|g" {} \;
           find site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"en/|href=\"/${{ github.event.release.tag_name }}/en/|g" {} \;
 
