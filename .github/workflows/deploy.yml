@@ -13,21 +13,12 @@ jobs:
       - name: Get code
         uses: actions/checkout@v4
 
-      # Шаг 2: Подготавливаем файлы для публикации
-      - name: Prepare files
+      - name: Prepare and deploy
         run: |
-          # Создаем основную папку
-          mkdir -p _site
-          
-          # Создаем папку с именем версии релиза
-          mkdir -p _site/${{ github.event.release.tag_name }}
-          
-          # Копируем все нужные файлы
-          cp -r *.html ru/ en/ _site/${{ github.event.release.tag_name }}/
-          
-          # Простое исправление ссылок для работы из подпапки
-          find _site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"ru/|href=\"/${{ github.event.release.tag_name }}/ru/|g" {} \;
-          find _site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|href=\"en/|href=\"/${{ github.event.release.tag_name }}/en/|g" {} \;
+            mkdir -p _site
+            mkdir -p _site/${{ github.event.release.tag_name }}
+            cp -r *.html ru/ en/ _site/${{ github.event.release.tag_name }}/
+
 
       # Шаг 3: Публикуем на GitHub Pages
       - name: Deploy to GitHub Pages
