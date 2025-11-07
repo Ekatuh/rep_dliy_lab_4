@@ -21,7 +21,7 @@ jobs:
         run: |
           mkdir -p _site/${{ github.event.release.tag_name }}
           cp -r *.html ru/ en/ _site/${{ github.event.release.tag_name }}/
-          find _site/${{ github.event.release.tag_name }} -name "*.html" -exec sed -i "s|/rep_dliy_lab_4/|/rep_dliy_lab_4/${{ github.event.release.tag_name }}/|g" {} \;
+          sed -i "s|/rep_dliy_lab_4/|/rep_dliy_lab_4/${{ github.event.release.tag_name }}/|g" _site/${{ github.event.release.tag_name }}/*.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
