@@ -27,8 +27,8 @@ jobs:
         run: |
           git config --global user.name "test"
           git config --global user.email "test@test.ru"
-          git pull origin gh-pages
-          git checkout gh-pages
+          git checkout FETCH_HEAD 
+          
           git add *
           git commit -m "Перенос"
           git push
