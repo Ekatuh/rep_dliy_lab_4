@@ -25,8 +25,9 @@ jobs:
 
       - name: Deploy to GitHub Pages
         run: | 
-          git branch -d gh-pages
-          
-          git commit "Перенос"
+          git status
+          git checkout gh-pages
+          git add *
+          git commit -m "Перенос"
           git push
       
