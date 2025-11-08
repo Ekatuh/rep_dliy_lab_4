@@ -25,6 +25,9 @@ jobs:
 
       - name: Deploy to GitHub Pages
         run: | 
+          git branch 
+          git branch -r
+          git pull
           git status
           git checkout gh-pages
           git add *
