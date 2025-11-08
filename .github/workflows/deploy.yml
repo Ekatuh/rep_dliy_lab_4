@@ -24,12 +24,9 @@ jobs:
           sed -i "s|/rep_dliy_lab_4/|/rep_dliy_lab_4/${{ github.event.release.tag_name }}/|g" _site/${{ github.event.release.tag_name }}/*.html
 
       - name: Deploy to GitHub Pages
-        run: | 
-          git branch 
-          git branch -r
-          git pull
-          git status
-          git checkout origin/gh-pages
+        run: |
+          git pull origin gh-pages
+          git checkout gh-pages
           git add *
           git commit -m "Перенос"
           git push
