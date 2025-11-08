@@ -24,9 +24,9 @@ jobs:
           sed -i "s|/rep_dliy_lab_4/|/rep_dliy_lab_4/${{ github.event.release.tag_name }}/|g" _site/${{ github.event.release.tag_name }}/*.html
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
-          publish_branch: gh-pages
-          keep_files: true
+        run: | 
+          git checkout gh-pages
+          
+          git commit "Перенос"
+          git push
+      
